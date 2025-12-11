@@ -1,0 +1,26 @@
+<% layout("/layouts/plateout") %>
+<link rel="stylesheet" href="/css/style.css" />
+
+<body>
+  <h1>Heeloo</h1>
+
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4">
+    <% for (let alll of all) { %>
+    <a href="/listing/<%= alll._id %>" style="text-decoration: none">
+      <div class="card col" style="width: 18rem">
+        <img
+          src="<%= alll.image.url %>"
+          class="card-img-top"
+          style="height: 21rem !important"
+        />
+        <div class="card-img-overlay"></div>
+        <div class="card-body">
+          <p class="card-text"><b><%= alll.title %></b></p>
+
+          <p>Price: ₹<%= Number(alll.price).toLocaleString("en-IN") %></p>
+        </div>
+      </div>
+    </a>
+    <% } %>
+  </div>
+</body>

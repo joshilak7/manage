@@ -1,0 +1,111 @@
+nav {
+  height: 70px;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+svg {
+  fill: red;
+  width: 30px;
+  height: 30px;
+}
+
+.fa-house {
+  font-size: 20px;
+}
+
+footer {
+  background-color: #ebebeb;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.social i {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #333;
+}
+
+.links a {
+  text-decoration: none;
+  color: #333;
+  margin-right: 10px;
+}
+
+footer div {
+  margin-bottom: 10px;
+}
+
+footer div :hover {
+  cursor: pointer;
+  color: red;
+}
+
+.ni-ni {
+  cursor: pointer;
+}
+
+.social,
+.links,
+.ni-ni {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.card {
+  margin-bottom: 2rem !important;
+  border: none !important;
+  margin-bottom: 1rem !important;
+  margin-left: 2rem !important;
+  margin-right: 2rem !important;
+}
+
+.card img {
+  object-fit: cover !important;
+  border-radius: 1rem !important;
+  width: 100% !important;
+}
+
+.card-img-overlay {
+  opacity: 0;
+}
+.card-img-overlay:hover {
+  background-color: white;
+  opacity: 0.2;
+  transition: 0.3s ease-in-out;
+}
+
+.imgInput {
+  width: 100%;
+}
+
+.car {
+  width: 25rem !important; /* make card smaller */
+  font-size: 0.9rem; /* slightly smaller text */
+}
+
+.car img {
+  height: 220px !important;
+  width: 100% !important; /* reduce image size */
+  object-fit: cover;
+}
