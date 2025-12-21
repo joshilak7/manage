@@ -35,6 +35,15 @@ app.get("/listing/neww", (req, res) => {
   res.render("listing/new");
 });
 
+const validateListing = (req, res, next) => {
+  const { error } = listingSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new Express(msg, 400);
+  } else {
+    next();
+  }
+};
 //index
 app.get(
   "/listing",
@@ -55,11 +64,9 @@ app.get(
 
 app.post(
   "/listi",
+  validateListing,
   wrap(async (req, res) => {
-    if (!req.body) {
-      let nn = new Express("Invalid Listing Data", 400);
-      throw nn;
-    }
+    listingSchema.validate(req.body);
     const { title, description, price, location, img, country } = req.body;
     console.log(title, description, price, location, img, country);
     let newlist = new List(req.body);
@@ -88,6 +95,7 @@ app.get(
 
 app.put(
   "/listing/edit/:id",
+  validateListing,
   wrap(async (req, res) => {
     let { title, description, price, location, img, country } = req.body;
     let { id } = req.params;
