@@ -69,7 +69,7 @@ app.get(
   "/listing/:id",
   wrap(async (req, res) => {
     let { id } = req.params;
-    const allListing = await mongo.findById(id);
+    const allListing = await mongo.findById(id).populate("reviews");
     res.render("listing/all", { allListing });
   })
 );
@@ -123,18 +123,16 @@ app.put(
   })
 );
 
-app.post(
-  "/listing/:id/review",
-  validateReview,
-  wrap(async (req, res) => {
-    let li = await List.findById(req.params.id);
-    let rev = new Review(req.body);
-    li.reviews.push(rev);
-    await rev.save();
-    await li.save();
-    res.redirect(`/listing/${li._id}`);
-  })
-);
+app.post("/listing/:id/review", validateReview, async (req, res) => {
+  let li = await List.findById(req.params.id).populate("reviews");
+  const re = new Review(req.body.review);
+  re.list = li._id;
+  li.reviews.push(re);
+  await re.save();
+  await li.save();
+  console.log(li.reviews);
+  res.redirect(`/listing/${li._id}`);
+});
 
 app.use((req, res, next) => {
   let err = new Express("Page Not Found", 404);

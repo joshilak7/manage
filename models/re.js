@@ -1,6 +1,5 @@
 const { Schema } = require("mongoose");
 const mongoose = require("mongoose");
-const { create } = require("./listing");
 
 const liss = new Schema({
   rating: {
@@ -17,5 +16,5 @@ const liss = new Schema({
   },
 });
 
-let Re = mongoose.model("Re", liss);
-module.exports = Re;
+let re = mongoose.model("Re", liss);
+module.exports = re;

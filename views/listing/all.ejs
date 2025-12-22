@@ -56,20 +56,28 @@
           min="1"
           max="5"
           id="re"
-          name="rating"
+          name="review[rating]"
           class="form-range"
         />
       </div>
       <div class="mb-3 mt-3">
         <label for="comment">Comment</label>
         <textarea
-          name="comment"
+          name="review[comment]"
           id="comment"
           class="form-control"
           required
         ></textarea>
       </div>
       <button type="submit" class="btn btn-dark">Submit</button>
+      <% for (let review of allListing.reviews) { %>
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title">Rating : <%= review.rating %> stars</h5>
+          <p class="card-text">comment : <%= review.comment %></p>
+        </div>
+      </div>
+      <% } %>
     </form>
   </div>
 </body>

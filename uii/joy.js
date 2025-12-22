@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const re = require("../models/re");
 
 const listingSchema = Joi.object({
   List: Joi.object({
@@ -8,13 +9,16 @@ const listingSchema = Joi.object({
     location: Joi.string().required(),
     img: Joi.string().allow("", null),
     country: Joi.string().required(),
-  }).required(),
+  }).required,
 });
 module.exports = listingSchema;
 
 const reviewSchema = Joi.object({
-  Re: Joi.object({
-    rating: Joi.number().required().min(1).max(5),
+  review: Joi.object({
+    // ✅ MUST match form
+    rating: Joi.number().min(1).max(5).required(),
     comment: Joi.string().required(),
   }).required(),
 });
+
+module.exports = reviewSchema;
