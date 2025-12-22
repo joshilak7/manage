@@ -2,6 +2,7 @@
 <body>
   <div class="offset-3">
     <div class="car" style="width: 20rem">
+      <h5 class="card-title"><%= allListing.title %></h5>
       <img
         src="<%= allListing.image.url %>"
         class="card-img-top"
@@ -9,7 +10,6 @@
         style="height: 200px; width: 100%; object-fit: cover"
       />
       <div class="card-body">
-        <h5 class="card-title"><%= allListing.title %></h5>
         <p class="card-text"><%= allListing.description %></p>
       </div>
       <ul class="list-group list-group-flush">
@@ -39,5 +39,37 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="offset-3">
+    <form
+      action="/listing/<%= allListing._id %>/review"
+      method="POST"
+      style="width: 50%; margin-top: 30px"
+      class="needs-validation"
+      novalidate
+    >
+      <h2>Review</h2>
+      <div class="mb-3 mt-3">
+        <label for="re">Review</label>
+        <input
+          type="range"
+          min="1"
+          max="5"
+          id="re"
+          name="rating"
+          class="form-range"
+        />
+      </div>
+      <div class="mb-3 mt-3">
+        <label for="comment">Comment</label>
+        <textarea
+          name="comment"
+          id="comment"
+          class="form-control"
+          required
+        ></textarea>
+      </div>
+      <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
   </div>
 </body>

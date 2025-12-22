@@ -4,6 +4,7 @@ const app = express();
 const port = 3000;
 const mongo = require("./models/listing.js");
 const List = require("./models/listing.js");
+const Review = require("./models/re.js");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 app.use(methodOverride("_method"));
@@ -12,6 +13,7 @@ const wrap = require("./uii/wrap.js");
 const path = require("path");
 const Express = require("./uii/express.js");
 const listingSchema = require("./uii/joy.js");
+const reviewSchema = require("./uii/joy.js");
 app.use(express.static(path.join(__dirname, "/public")));
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/manag");
@@ -37,6 +39,16 @@ app.get("/listing/neww", (req, res) => {
 
 const validateListing = (req, res, next) => {
   const { error } = listingSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new Express(msg, 400);
+  } else {
+    next();
+  }
+};
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
     const msg = error.details.map((el) => el.message).join(",");
     throw new Express(msg, 400);
@@ -108,6 +120,19 @@ app.put(
       country,
     });
     res.redirect(`/listing/${id}`);
+  })
+);
+
+app.post(
+  "/listing/:id/review",
+  validateReview,
+  wrap(async (req, res) => {
+    let li = await List.findById(req.params.id);
+    let rev = new Review(req.body);
+    li.reviews.push(rev);
+    await rev.save();
+    await li.save();
+    res.redirect(`/listing/${li._id}`);
   })
 );
 
