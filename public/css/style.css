@@ -72,7 +72,7 @@ footer div :hover {
   width: 100%;
 }
 
-.card {
+.carr {
   margin-bottom: 2rem !important;
   border: none !important;
   margin-bottom: 1rem !important;
@@ -80,16 +80,16 @@ footer div :hover {
   margin-right: 2rem !important;
 }
 
-.card img {
+.carr img {
   object-fit: cover !important;
   border-radius: 1rem !important;
   width: 100% !important;
 }
 
-.card-img-overlay {
+.carr-img-overlay {
   opacity: 0;
 }
-.card-img-overlay:hover {
+.carr-img-overlay:hover {
   background-color: white;
   opacity: 0.2;
   transition: 0.3s ease-in-out;

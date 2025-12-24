@@ -70,14 +70,22 @@
         ></textarea>
       </div>
       <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
+
+    <hr />
+    <p>All reviews</p>
+    <div class="row">
       <% for (let review of allListing.reviews) { %>
-      <div class="card mt-3">
+      <div class="card mt-3 col-5 mb-3 ms-3">
         <div class="card-body">
-          <h5 class="card-title">Rating : <%= review.rating %> stars</h5>
-          <p class="card-text">comment : <%= review.comment %></p>
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text"><%= review.comment %></p>
+          <h6 class="card-subtitle mb-2 text-body-secondary">
+            <%= review.rating %> stars
+          </h6>
         </div>
       </div>
       <% } %>
-    </form>
+    </div>
   </div>
 </body>
