@@ -14,8 +14,7 @@ const listingSchema = Joi.object({
 module.exports = listingSchema;
 
 const reviewSchema = Joi.object({
-  review: Joi.object({
-    // ✅ MUST match form
+  re: Joi.object({
     rating: Joi.number().min(1).max(5).required(),
     comment: Joi.string().required(),
   }).required(),
