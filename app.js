@@ -70,6 +70,7 @@ app.get(
   wrap(async (req, res) => {
     let { id } = req.params;
     const allListing = await mongo.findById(id).populate("reviews");
+    const reviews = await Review.findById(id);
     res.render("listing/all", { allListing });
   })
 );
@@ -133,6 +134,16 @@ app.post("/listing/:id/review", validateReview, async (req, res) => {
   console.log(li.reviews);
   res.redirect(`/listing/${li._id}`);
 });
+
+app.delete(
+  "/listing/:id/review/:reviewId",
+  wrap(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await List.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listing/${id}`);
+  })
+);
 
 app.use((req, res, next) => {
   let err = new Express("Page Not Found", 404);

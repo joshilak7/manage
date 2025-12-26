@@ -73,7 +73,7 @@
     </form>
 
     <hr />
-    <p>All reviews</p>
+    <h2>All Reviews</h2>
     <div class="row">
       <% for (let review of allListing.reviews) { %>
       <div class="card mt-3 col-5 mb-3 ms-3">
@@ -84,6 +84,12 @@
             <%= review.rating %> stars
           </h6>
         </div>
+        <form
+          action="/listing/<%= allListing._id %>/review/<%= review._id %>?_method=DELETE"
+          method="POST"
+        >
+          <button type="submit" class="btn btn-dark">Delete Review</button>
+        </form>
       </div>
       <% } %>
     </div>
