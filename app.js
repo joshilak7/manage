@@ -12,12 +12,13 @@ app.engine("ejs", ejsMate);
 const wrap = require("./uii/wrap.js");
 const path = require("path");
 const Express = require("./uii/express.js");
-const listingSchema = require("./uii/joy.js");
-const reviewSchema = require("./uii/joy.js");
+const { listingSchema, reviewSchema } = require("./uii/joy.js");
+const { title } = require("process");
 app.use(express.static(path.join(__dirname, "/public")));
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/manag");
 }
+
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -38,6 +39,7 @@ app.get("/listing/neww", (req, res) => {
 });
 
 const validateListing = (req, res, next) => {
+  console.log(req.body);
   const { error } = listingSchema.validate(req.body);
   if (error) {
     const msg = error.details.map((el) => el.message).join(",");
@@ -48,14 +50,17 @@ const validateListing = (req, res, next) => {
 };
 
 const validateReview = (req, res, next) => {
+  console.log("Received review data:", req.body); // ← Add this line
   const { error } = reviewSchema.validate(req.body);
   if (error) {
+    console.log("Joi error:", error.details);
     const msg = error.details.map((el) => el.message).join(",");
     throw new Express(msg, 400);
   } else {
     next();
   }
 };
+
 //index
 app.get(
   "/listing",
@@ -70,7 +75,6 @@ app.get(
   wrap(async (req, res) => {
     let { id } = req.params;
     const allListing = await mongo.findById(id).populate("reviews");
-    const reviews = await Review.findById(id);
     res.render("listing/all", { allListing });
   })
 );
@@ -124,16 +128,18 @@ app.put(
   })
 );
 
-app.post("/listing/:id/review", validateReview, async (req, res) => {
-  let li = await List.findById(req.params.id).populate("reviews");
-  const re = new Review(req.body.review);
-  re.list = li._id;
-  li.reviews.push(re);
-  await re.save();
-  await li.save();
-  console.log(li.reviews);
-  res.redirect(`/listing/${li._id}`);
-});
+app.post(
+  "/listing/:id/review",
+  validateReview,
+  wrap(async (req, res) => {
+    const listing = await List.findById(req.params.id);
+    const review = new Review(req.body.review);
+    listing.reviews.push(review);
+    await review.save();
+    await listing.save();
+    res.redirect(`/listing/${listing._id}`);
+  })
+);
 
 app.delete(
   "/listing/:id/review/:reviewId",

@@ -1,23 +1,22 @@
 const Joi = require("joi");
-const re = require("../models/re");
 
+// Listing validation schema
 const listingSchema = Joi.object({
-  List: Joi.object({
-    title: Joi.string().required(),
-    description: Joi.string().required(),
-    price: Joi.number().required().min(0),
-    location: Joi.string().required(),
-    img: Joi.string().allow("", null),
-    country: Joi.string().required(),
-  }).required,
-});
-module.exports = listingSchema;
+  title: Joi.string().required(),
+  description: Joi.string().required(),
+  price: Joi.number().min(0).required(),
+  location: Joi.string().required(),
+  country: Joi.string().required(),
+  img: Joi.string().allow("").optional(), // image URL optional
+}).required();
 
+// Review validation schema
 const reviewSchema = Joi.object({
-  re: Joi.object({
+  review: Joi.object({
     rating: Joi.number().min(1).max(5).required(),
     comment: Joi.string().required(),
   }).required(),
 });
 
-module.exports = reviewSchema;
+// Export BOTH schemas as an object
+module.exports = { listingSchema, reviewSchema };

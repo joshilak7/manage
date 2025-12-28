@@ -32,6 +32,7 @@ const listingSchema = new mongoose.Schema(
 listingSchema.post("findOneAndDelete", async function (doc) {
   if (doc) {
     await Review.deleteMany({ _id: { $in: doc.reviews } });
+    console.log("Deleted associated reviews for listing:", doc._id);
   }
 });
 
