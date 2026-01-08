@@ -2,15 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const port = 3000;
-const mongo = require("./models/listing.js");
-const List = require("./models/listing.js");
-const Review = require("./models/re.js");
 const methodOverride = require("method-override");
+const Review = require("./routes/Review.js");
 const ejsMate = require("ejs-mate");
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 const wrap = require("./uii/wrap.js");
 const path = require("path");
+const listing = require("./routes/listing.js");
 const Express = require("./uii/express.js");
 const { listingSchema, reviewSchema } = require("./uii/joy.js");
 const { title } = require("process");
@@ -34,122 +33,9 @@ app.get("/", (req, res) => {
   res.send("homme pagees");
 });
 
-app.get("/listing/neww", (req, res) => {
-  res.render("listing/new");
-});
-
-const validateListing = (req, res, next) => {
-  console.log(req.body);
-  const { error } = listingSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new Express(msg, 400);
-  } else {
-    next();
-  }
-};
-
-const validateReview = (req, res, next) => {
-  console.log("Received review data:", req.body); // ← Add this line
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    console.log("Joi error:", error.details);
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new Express(msg, 400);
-  } else {
-    next();
-  }
-};
-
 //index
-app.get(
-  "/listing",
-  wrap(async (req, res) => {
-    const all = await mongo.find({});
-    res.render("listing/index", { all });
-  })
-);
-
-app.get(
-  "/listing/:id",
-  wrap(async (req, res) => {
-    let { id } = req.params;
-    const allListing = await mongo.findById(id).populate("reviews");
-    res.render("listing/all", { allListing });
-  })
-);
-
-app.post(
-  "/listi",
-  validateListing,
-  wrap(async (req, res) => {
-    listingSchema.validate(req.body);
-    const { title, description, price, location, img, country } = req.body;
-    console.log(title, description, price, location, img, country);
-    let newlist = new List(req.body);
-    await newlist.save();
-    res.redirect("/listing");
-  })
-);
-
-app.delete(
-  "/listing/:id",
-  wrap(async (req, res) => {
-    const { id } = req.params;
-    await mongo.findByIdAndDelete(id);
-    res.redirect("/listing");
-  })
-);
-
-app.get(
-  "/listing/:id/edit",
-  wrap(async (req, res) => {
-    let { id } = req.params;
-    let connect = await mongo.findById(id);
-    res.render("listing/edit", { connect });
-  })
-);
-
-app.put(
-  "/listing/edit/:id",
-  validateListing,
-  wrap(async (req, res) => {
-    let { title, description, price, location, img, country } = req.body;
-    let { id } = req.params;
-    await mongo.findByIdAndUpdate(id, {
-      title,
-      description,
-      price,
-      location,
-      img,
-      country,
-    });
-    res.redirect(`/listing/${id}`);
-  })
-);
-
-app.post(
-  "/listing/:id/review",
-  validateReview,
-  wrap(async (req, res) => {
-    const listing = await List.findById(req.params.id);
-    const review = new Review(req.body.review);
-    listing.reviews.push(review);
-    await review.save();
-    await listing.save();
-    res.redirect(`/listing/${listing._id}`);
-  })
-);
-
-app.delete(
-  "/listing/:id/review/:reviewId",
-  wrap(async (req, res) => {
-    const { id, reviewId } = req.params;
-    await List.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/listing/${id}`);
-  })
-);
+app.use("/", listing);
+app.use("/listing/:id/review", Review);
 
 app.use((req, res, next) => {
   let err = new Express("Page Not Found", 404);
