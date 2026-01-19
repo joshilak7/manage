@@ -11,13 +11,28 @@ const wrap = require("./uii/wrap.js");
 const path = require("path");
 const listing = require("./routes/listing.js");
 const Express = require("./uii/express.js");
-const { listingSchema, reviewSchema } = require("./uii/joy.js");
 const { title } = require("process");
+const session = require("express-session");
+const connectflash = require("connect-flash");
 app.use(express.static(path.join(__dirname, "/public")));
+
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/manag");
 }
 
+const se = {
+  secret: "thisisasecretkey",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    httpOnly: true,
+  },
+};
+
+app.use(session(se));
+app.use(connectflash());
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -28,6 +43,11 @@ main()
   .catch((err) => {
     console.error("connection noo:", err);
   });
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  next();
+});
 
 app.get("/", (req, res) => {
   res.send("homme pagees");
@@ -46,7 +66,7 @@ app.use((err, req, res, next) => {
   if (!err.statusCode) err.statusCode = 500;
   if (!err.message) err.message = "Oh No, Something Went Wrong!";
   res.render("listing/err", {
-    status: err.statusCode || 500, // agar err.statusCode undefined ho to 500 use hoga
+    status: err.statusCode || 500,
     message: err.message,
   });
 });

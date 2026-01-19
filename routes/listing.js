@@ -26,7 +26,7 @@ router.get(
   wrap(async (req, res) => {
     const all = await mongo.find({});
     res.render("listing/index", { all });
-  })
+  }),
 );
 
 router.get(
@@ -35,7 +35,7 @@ router.get(
     let { id } = req.params;
     const allListing = await mongo.findById(id).populate("reviews");
     res.render("listing/all", { allListing });
-  })
+  }),
 );
 
 router.post(
@@ -47,8 +47,9 @@ router.post(
     console.log(title, description, price, location, img, country);
     let newlist = new List(req.body);
     await newlist.save();
+    req.flash("success", "Listing Created Successfully");
     res.redirect("/listing");
-  })
+  }),
 );
 
 router.delete(
@@ -56,8 +57,9 @@ router.delete(
   wrap(async (req, res) => {
     const { id } = req.params;
     await mongo.findByIdAndDelete(id);
+    req.flash("success", "Listing Deleted Successfully");
     res.redirect("/listing");
-  })
+  }),
 );
 
 router.get(
@@ -65,8 +67,9 @@ router.get(
   wrap(async (req, res) => {
     let { id } = req.params;
     let connect = await mongo.findById(id);
+    req.flash("success", "Listing Edited Successfully");
     res.render("listing/edit", { connect });
-  })
+  }),
 );
 
 router.put(
@@ -83,8 +86,9 @@ router.put(
       img,
       country,
     });
+    req.flash("success", "Listing Updated Successfully");
     res.redirect(`/listing/${id}`);
-  })
+  }),
 );
 
 module.exports = router;
