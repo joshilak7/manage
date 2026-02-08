@@ -11,7 +11,7 @@
     />
   </head>
   <body>
-    <%- include('../includes/navbar') %>
+    <%- include('../includes/navbar') %> <%- include("../includes/flash.ejs") %>
     <div class="container"><%- body %></div>
     <%- include("../includes/footer") %>
   </body>
@@ -30,7 +30,7 @@
 
             form.classList.add("was-validated");
           },
-          false
+          false,
         );
       });
     })();
