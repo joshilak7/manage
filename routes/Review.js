@@ -29,6 +29,14 @@ router.post(
     listing.reviews.push(review);
     await review.save();
     await listing.save();
+    if (!listing) {
+      req.flash("error", "Listing Not Found");
+      return res.redirect("/listing");
+    }
+    if (!review) {
+      req.flash("error", "Review Not Found");
+      return res.redirect("/listing");
+    }
     req.flash("success", "Review Added Successfully");
     res.redirect(`/listing/${listing._id}`);
   }),

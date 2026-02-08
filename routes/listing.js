@@ -4,6 +4,7 @@ const List = require("../models/listing.js");
 const Express = require("../uii/express.js");
 const { listingSchema } = require("../uii/joy.js");
 const wrap = require("../uii/wrap.js");
+const re = require("../models/re.js");
 const router = express.Router();
 
 const validateListing = (req, res, next) => {
@@ -34,6 +35,10 @@ router.get(
   wrap(async (req, res) => {
     let { id } = req.params;
     const allListing = await mongo.findById(id).populate("reviews");
+    if (!allListing) {
+      req.flash("error", "Listing Not Found");
+      return res.redirect("/listing");
+    }
     res.render("listing/all", { allListing });
   }),
 );
@@ -67,7 +72,10 @@ router.get(
   wrap(async (req, res) => {
     let { id } = req.params;
     let connect = await mongo.findById(id);
-    req.flash("success", "Listing Edited Successfully");
+    if (!connect) {
+      req.flash("error", "Listing Not Found");
+      return res.redirect("/listing");
+    }
     res.render("listing/edit", { connect });
   }),
 );
@@ -76,16 +84,15 @@ router.put(
   "/listing/edit/:id",
   validateListing,
   wrap(async (req, res) => {
-    let { title, description, price, location, img, country } = req.body;
     let { id } = req.params;
-    await mongo.findByIdAndUpdate(id, {
-      title,
-      description,
-      price,
-      location,
-      img,
-      country,
-    });
+
+    let update = await mongo.findByIdAndUpdate(id, req.body, { new: true });
+
+    if (!update) {
+      req.flash("error", "Listing Not Found");
+      return res.redirect("/listing");
+    }
+
     req.flash("success", "Listing Updated Successfully");
     res.redirect(`/listing/${id}`);
   }),

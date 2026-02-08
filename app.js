@@ -11,6 +11,9 @@ const wrap = require("./uii/wrap.js");
 const path = require("path");
 const listing = require("./routes/listing.js");
 const Express = require("./uii/express.js");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const user = require("./models/user.js");
 const { title } = require("process");
 const session = require("express-session");
 const connectflash = require("connect-flash");
@@ -33,6 +36,11 @@ const se = {
 
 app.use(session(se));
 app.use(connectflash());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(user.authenticate()));
+passport.serializeUser(user.serializeUser());
+passport.deserializeUser(user.deserializeUser());
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -46,6 +54,7 @@ main()
 
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
   next();
 });
 
